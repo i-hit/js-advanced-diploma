@@ -33,10 +33,10 @@ module.exports = {
           {
             loader: 'url-loader',
             options: {
-              limit: false,
-              mimetype: 'image/png',
-              encoding: 'utf8',
-              esModule: true,
+              // limit: false,
+              // mimetype: 'image/png',
+              // encoding: 'utf8',
+              // esModule: true,
             },
           },
         ],

@@ -1,4 +1,5 @@
 import { calcHealthLevel, calcTileType } from './utils';
+import themes from './themes';
 
 export default class GamePlay {
   constructor() {
