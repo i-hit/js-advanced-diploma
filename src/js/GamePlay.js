@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 import { calcHealthLevel, calcTileType } from './utils';
 import themes from './themes';
 

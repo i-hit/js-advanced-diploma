@@ -56,14 +56,12 @@ function getClass(level) {
  */
 export function* characterGenerator(maxLevel) {
   // TODO: write logic here
-  const result = [];
   const answer = getClass(maxLevel);
   for (let i = 0; i < answer.cnt; i += 1) {
     const index = Math.floor(Math.random() * answer.index);
     const level = Math.floor(Math.random() * (answer.level - 1)) + 1;
-    result.push(new allowedTypesCharacters[index](level));
+    yield new allowedTypesCharacters[index](level);
   }
-  yield result;
 }
 
 export function generateTeam(maxLevel, characterCount) {
