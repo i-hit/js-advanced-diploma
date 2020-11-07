@@ -1,4 +1,4 @@
-import Character from '../Character';
+import Character from '../Characters/Character';
 import Bowman from '../Characters/Bowman';
 import Magician from '../Characters/Magician';
 import Swordsman from '../Characters/Swordsman';

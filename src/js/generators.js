@@ -1,51 +1,3 @@
-import Bowman from './Characters/Bowman';
-import Magician from './Characters/Magician';
-import Swordsman from './Characters/Swordsman';
-import Daemon from './Characters/Daemon';
-import Undead from './Characters/Undead';
-import Vampire from './Characters/Vampire';
-
-const allowedTypesCharacters = [
-  Bowman,
-  Swordsman,
-  Magician,
-  Daemon,
-  Undead,
-  Vampire,
-];
-
-function getClass(level) {
-  switch (level) {
-    case 1:
-      return {
-        index: 2,
-        level: 2,
-        cnt: 2,
-      };
-    case 2:
-      return {
-        index: 3,
-        level: 2,
-        cnt: 1,
-      };
-    case 3:
-      return {
-        index: 3,
-        level: 3,
-        cnt: 2,
-      };
-    case 4:
-      return {
-        index: 3,
-        level: 4,
-        cnt: 2,
-      };
-
-    default:
-      break;
-  }
-}
-
 
 /**
  * Generates random characters
@@ -54,18 +6,26 @@ function getClass(level) {
  * @param maxLevel max character level
  * @returns Character type children (ex. Magician, Bowman, etc)
  */
-export function* characterGenerator(maxLevel) {
+export function* characterGenerator(types, maxLevel) {
   // TODO: write logic here
-  const answer = getClass(maxLevel);
-  for (let i = 0; i < answer.cnt; i += 1) {
-    const index = Math.floor(Math.random() * answer.index);
-    const level = Math.floor(Math.random() * (answer.level - 1)) + 1;
-    yield new allowedTypesCharacters[index](level);
+  const index = Math.floor(Math.random() * types.length);
+  const level = Math.floor(Math.random() * maxLevel) + 1;
+  const character = new types[index](level);
+
+  if (level > 1) {
+    for (let i = level; i > 1; i -= 1) {
+      character.levelUp();
+    }
   }
+
+  yield character;
 }
 
-export function generateTeam(maxLevel, characterCount) {
+export function generateTeam(param) {
   // TODO: write logic here
-  const result = characterGenerator(maxLevel);
-  return [...result];
+  let result = [];
+  for (let i = param.cntUnits; i > 0; i -= 1) {
+    result = [...result, ...characterGenerator(param.allowedTypesCharacters, param.maxLevel)];
+  }
+  return result;
 }

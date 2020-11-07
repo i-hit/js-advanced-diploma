@@ -34,3 +34,10 @@ export function calcHealthLevel(health) {
 
   return 'high';
 }
+
+export function isEmptyCell(position) {
+  const result = null;
+  // position занято на поле или нет?
+
+  return result;
+}
