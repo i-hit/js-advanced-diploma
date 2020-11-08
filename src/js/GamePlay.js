@@ -1,6 +1,5 @@
 /* eslint-disable no-restricted-syntax */
 import { calcHealthLevel, calcTileType } from './utils';
-import themes from './themes';
 
 export default class GamePlay {
   constructor() {
@@ -252,8 +251,8 @@ export default class GamePlay {
     for (let i = 1; i <= selectedCell.character.travelRange; i += 1) {
       const left = selectedCell.position - i;
       const right = selectedCell.position + i;
-      const up = selectedCell.position + i * this.boardSize;
-      const down = selectedCell.position - i * this.boardSize;
+      const up = selectedCell.position - i * this.boardSize;
+      const down = selectedCell.position + i * this.boardSize;
       const leftUp = selectedCell.position - i - i * this.boardSize;
       const rightUp = selectedCell.position + i - i * this.boardSize;
       const leftDown = selectedCell.position - i + i * this.boardSize;
@@ -328,25 +327,60 @@ export default class GamePlay {
   }
 
   canAttack(index, selectedCell) {
-    let result = false;
+    const result = new Set();
 
     for (let i = 0; i <= selectedCell.character.attackRange; i += 1) {
-      for (let j = 1; j <= selectedCell.character.attackRange; j += 1) {
+      for (let j = 0; j <= selectedCell.character.attackRange; j += 1) {
         const left = selectedCell.position - i;
         const right = selectedCell.position + i;
-        const up = selectedCell.position + i * this.boardSize;
-        const down = selectedCell.position - i * this.boardSize;
+        const upLeft = selectedCell.position - i - j * this.boardSize;
+        const upRight = selectedCell.position + i - j * this.boardSize;
+        const downLeft = selectedCell.position - i + j * this.boardSize;
+        const downRight = selectedCell.position + i + j * this.boardSize;
 
-        switch (true) {
-          case (left >= this.getEdgePointLeft(selectedCell.position) && ((up || down) === index)):
-          case (right <= this.getEdgePointRight(selectedCell.position) && ((up || down) === index)):
-            result = true;
-            break;
-          default:
-            break;
+        if (
+          left >= this.getEdgePointLeft(selectedCell.position)
+          || right <= this.getEdgePointRight(selectedCell.position)
+        ) {
+          result
+            .add(upLeft)
+            .add(upRight)
+            .add(downLeft)
+            .add(downRight);
         }
       }
     }
-    return result;
+    return result.has(index);
   }
+
+  // canAttack(index, selectedCell) {
+  //   let result = false;
+
+  //   for (let i = 0; i <= selectedCell.character.attackRange; i += 1) {
+  //     for (let j = 0; j <= selectedCell.character.attackRange; j += 1) {
+  //       const left = selectedCell.position - i;
+  //       const right = selectedCell.position + i;
+  //       const upLeft = selectedCell.position - i - j * this.boardSize;
+  //       const upRight = selectedCell.position + i - j * this.boardSize;
+  //       const downLeft = selectedCell.position - i + j * this.boardSize;
+  //       const downRight = selectedCell.position + i + j * this.boardSize;
+
+  //       switch (true) {
+  //         case (
+  //           left >= this.getEdgePointLeft(selectedCell.position)
+  //           && (upLeft === index || downLeft === index)
+  //         ):
+  //         case (
+  //           right <= this.getEdgePointRight(selectedCell.position)
+  //           && (upRight === index || downRight === index)
+  //         ):
+  //           result = true;
+  //           break;
+  //         default:
+  //           break;
+  //       }
+  //     }
+  //   }
+  //   return result;
+  // }
 }

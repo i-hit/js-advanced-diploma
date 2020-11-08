@@ -36,7 +36,8 @@ export default class GameRules {
   }
 
   getStartPosition() {
-    for (let a = 0, b = this.boardSize - 1; a < this.boardSize ** 2; a += this.boardSize, b += this.boardSize) {
+    for (let a = 0, b = this.boardSize - 1; a < this.boardSize ** 2;
+      a += this.boardSize, b += this.boardSize) {
       this.goodStartpositions.push(a);
       this.goodStartpositions.push(a + 1);
       this.evilStartpositions.push(b);

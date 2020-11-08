@@ -29,7 +29,7 @@ export default class GameController {
   onCellClick(index) {
     // TODO: react to click
     const target = this.team.getCharacterByPosition(index);
-    if (target) {
+    if (!this.selectedCharacter && target) {
       if (target.side === this.playerSide) {
         this.selectedCharacter = this.team.getElementByPosition(index);
       }
@@ -37,10 +37,22 @@ export default class GameController {
       if (target.side !== this.playerSide) {
         this.gamePlay.showError('это персонаж противника');
       }
+    }
 
+    if (this.selectedCharacter && target) {
       if (target.side === this.playerSide) {
         this.gamePlay.deselectAllCell();
         this.gamePlay.selectCell(index);
+        this.selectedCharacter = this.team.getElementByPosition(index);
+      }
+    }
+
+    if (this.selectedCharacter && !target) {
+      if (this.gamePlay.canMoved(index, this.selectedCharacter)) {
+        this.selectedCharacter.position = index;
+        this.selectedCharacter = undefined;
+        this.gamePlay.deselectAllCell(index);
+        this.gamePlay.redrawPositions(this.team.team);
       }
     }
   }
@@ -77,18 +89,21 @@ export default class GameController {
       }
     }
 
-    if (this.selectedCharacter && target && target.side !== this.playerSide) {
-      if (this.gamePlay.canAttack(index, this.selectedCharacter)) {
-        this.gamePlay.selectCell(index, 'red');
-        this.gamePlay.setCursor(this.rules.cursors.crosshair);
-      }
-      if (!this.gamePlay.canAttack(index, this.selectedCharacter)) {
-        this.gamePlay.setCursor(this.rules.cursors.notallowed);
-      }
-    }
+    if (this.selectedCharacter && target) {
+      if (target.side !== this.playerSide) {
+        if (this.gamePlay.canAttack(index, this.selectedCharacter)) {
+          this.gamePlay.selectCell(index, 'red');
+          this.gamePlay.setCursor(this.rules.cursors.crosshair);
+        }
 
-    if (this.selectedCharacter && target && target.side === this.playerSide) {
-      this.gamePlay.setCursor(this.rules.cursors.pointer);
+        if (!this.gamePlay.canAttack(index, this.selectedCharacter)) {
+          this.gamePlay.setCursor(this.rules.cursors.notallowed);
+        }
+      }
+
+      if (target.side === this.playerSide) {
+        this.gamePlay.setCursor(this.rules.cursors.pointer);
+      }
     }
   }
 
