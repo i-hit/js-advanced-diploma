@@ -5,6 +5,8 @@ export default class Character {
     this.defence = 0;
     this.health = 50;
     this.type = type;
+    this.travelRange = 0;
+    this.attackRange = 0;
 
     // TODO: throw error if user use "new Character()"
     if (new.target === Character) {

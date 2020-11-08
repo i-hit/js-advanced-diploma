@@ -14,6 +14,8 @@ export default class GamePlay {
     this.newGameListeners = [];
     this.saveGameListeners = [];
     this.loadGameListeners = [];
+
+    this.selectedCell = null;
   }
 
   bindToDOM(container) {
@@ -179,7 +181,7 @@ export default class GamePlay {
     this.loadGameListeners.forEach((o) => o.call(null));
   }
 
-  static showError(message) {
+  showError(message) {
     alert(message);
   }
 
@@ -190,12 +192,25 @@ export default class GamePlay {
   selectCell(index, color = 'yellow') {
     this.deselectCell(index);
     this.cells[index].classList.add('selected', `selected-${color}`);
+    this.selectedCell = index;
   }
 
   deselectCell(index) {
     const cell = this.cells[index];
     cell.classList.remove(...Array.from(cell.classList)
       .filter((o) => o.startsWith('selected')));
+  }
+
+  deselectAllCell() {
+    const cell = this.cells;
+    cell.forEach((e) => {
+      e.classList.remove(...Array.from(e.classList)
+        .filter((o) => o.startsWith('selected')));
+    });
+  }
+
+  hasSelectedCharacter() {
+    return this.selectedCell;
   }
 
   showCellTooltip(message, index) {
@@ -229,5 +244,109 @@ export default class GamePlay {
     if (this.container === null) {
       throw new Error('GamePlay not bind to DOM');
     }
+  }
+
+  canMoved(index, selectedCell) {
+    let result = false;
+
+    for (let i = 1; i <= selectedCell.character.travelRange; i += 1) {
+      const left = selectedCell.position - i;
+      const right = selectedCell.position + i;
+      const up = selectedCell.position + i * this.boardSize;
+      const down = selectedCell.position - i * this.boardSize;
+      const leftUp = selectedCell.position - i - i * this.boardSize;
+      const rightUp = selectedCell.position + i - i * this.boardSize;
+      const leftDown = selectedCell.position - i + i * this.boardSize;
+      const rightDown = selectedCell.position + i + i * this.boardSize;
+
+
+      switch (true) {
+        case (up === index):
+        case (down === index):
+        case (left === index && index >= this.getEdgePointLeft(selectedCell.position)):
+        case (right === index && index <= this.getEdgePointRight(selectedCell.position)):
+        case (leftUp === index && index >= this.getEdgePointLeftUp(selectedCell.position)):
+        case (rightUp === index && index >= this.getEdgePointRightUp(selectedCell.position)):
+        case (leftDown === index && index <= this.getEdgePointLeftDown(selectedCell.position)):
+        case (rightDown === index && index <= this.getEdgePointRightDown(selectedCell.position)):
+          result = true;
+          break;
+
+        default:
+          break;
+      }
+    }
+    return result;
+  }
+
+  getEdgePointLeft(index) {
+    let cnt = 0;
+    while ((index - cnt) % this.boardSize !== 0) {
+      cnt += 1;
+    }
+    return index - cnt;
+  }
+
+  getEdgePointRight(index) {
+    let cnt = 0;
+    while ((index + cnt + 1) % this.boardSize !== 0) {
+      cnt += 1;
+    }
+    return index + cnt;
+  }
+
+  getEdgePointLeftDown(index) {
+    let cnt = 0;
+    while ((index + cnt) % this.boardSize !== 0) {
+      cnt += this.boardSize - 1;
+    }
+    return index + cnt;
+  }
+
+  getEdgePointLeftUp(index) {
+    let cnt = 0;
+    while ((index - cnt) % this.boardSize !== 0) {
+      cnt += this.boardSize + 1;
+    }
+    return index - cnt;
+  }
+
+  getEdgePointRightDown(index) {
+    let cnt = 0;
+    while ((index + cnt + 1) % this.boardSize !== 0) {
+      cnt += this.boardSize + 1;
+    }
+    return index + cnt;
+  }
+
+  getEdgePointRightUp(index) {
+    let cnt = 0;
+    while ((index - cnt + 1) % this.boardSize !== 0) {
+      cnt += this.boardSize - 1;
+    }
+    return index - cnt;
+  }
+
+  canAttack(index, selectedCell) {
+    let result = false;
+
+    for (let i = 0; i <= selectedCell.character.attackRange; i += 1) {
+      for (let j = 1; j <= selectedCell.character.attackRange; j += 1) {
+        const left = selectedCell.position - i;
+        const right = selectedCell.position + i;
+        const up = selectedCell.position + i * this.boardSize;
+        const down = selectedCell.position - i * this.boardSize;
+
+        switch (true) {
+          case (left >= this.getEdgePointLeft(selectedCell.position) && ((up || down) === index)):
+          case (right <= this.getEdgePointRight(selectedCell.position) && ((up || down) === index)):
+            result = true;
+            break;
+          default:
+            break;
+        }
+      }
+    }
+    return result;
   }
 }

@@ -41,10 +41,24 @@ export default class Team {
     return [...this._goodTeam, ...this._evilTeam];
   }
 
+  reset() {
+    this._goodTeam = [];
+    this._evilTeam = [];
+  }
+
+  // eslint-disable-next-line consistent-return
   getCharacterByPosition(index) {
     const result = this.team.find((e) => e.position === index);
     if (result) {
       return result.character;
+    }
+  }
+
+  // eslint-disable-next-line consistent-return
+  getElementByPosition(index) {
+    const result = this.team.find((e) => e.position === index);
+    if (result) {
+      return result;
     }
   }
 }

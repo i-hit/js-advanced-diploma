@@ -5,6 +5,9 @@ import Daemon from './Characters/Daemon';
 import Undead from './Characters/Undead';
 import Vampire from './Characters/Vampire';
 
+import themes from './themes';
+import cursors from './cursors';
+
 
 export default class GameRules {
   constructor(boardSize) {
@@ -27,6 +30,9 @@ export default class GameRules {
     this.boardSize = boardSize;
 
     this.getStartPosition();
+
+    this.themes = themes;
+    this.cursors = cursors;
   }
 
   getStartPosition() {
@@ -72,5 +78,11 @@ export default class GameRules {
       goodParam,
       evilParam,
     };
+  }
+
+  getThemes(gameStep) {
+    const keys = Object.keys(this.themes);
+    const index = gameStep <= 4 ? gameStep - 1 : 4;
+    return this.themes[keys[index]];
   }
 }
