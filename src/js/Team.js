@@ -46,6 +46,17 @@ export default class Team {
     this._evilTeam = [];
   }
 
+  deleteDeadCharacter(index) {
+    const target = this.getCharacterByPosition(index);
+    if (target.side === 'good') {
+      this._goodTeam = this._goodTeam.filter((e) => e.position !== index);
+    }
+
+    if (target.side === 'evil') {
+      this._evilTeam = this._evilTeam.filter((e) => e.position !== index);
+    }
+  }
+
   // eslint-disable-next-line consistent-return
   getCharacterByPosition(index) {
     const result = this.team.find((e) => e.position === index);

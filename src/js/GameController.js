@@ -45,6 +45,21 @@ export default class GameController {
         this.gamePlay.selectCell(index);
         this.selectedCharacter = this.team.getElementByPosition(index);
       }
+
+      if (target.side !== this.playerSide) {
+        if (this.gamePlay.canAttack(index, this.selectedCharacter)) {
+          const damage = Math.max(
+            this.selectedCharacter.character.attack - target.defence,
+            this.selectedCharacter.character.attack * 0.1,
+          );
+          this.gamePlay.showDamage(index, damage);
+          target.health -= damage;
+          if (target.health <= 0) {
+            this.team.deleteDeadCharacter(index);
+          }
+          this.gamePlay.redrawPositions(this.team.team);
+        }
+      }
     }
 
     if (this.selectedCharacter && !target) {

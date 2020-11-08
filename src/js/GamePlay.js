@@ -340,7 +340,7 @@ export default class GamePlay {
 
         if (
           left >= this.getEdgePointLeft(selectedCell.position)
-          || right <= this.getEdgePointRight(selectedCell.position)
+          && right <= this.getEdgePointRight(selectedCell.position)
         ) {
           result
             .add(upLeft)
