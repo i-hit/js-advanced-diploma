@@ -52,12 +52,14 @@ export default class GameController {
             this.selectedCharacter.character.attack - target.defence,
             this.selectedCharacter.character.attack * 0.1,
           );
-          this.gamePlay.showDamage(index, damage);
-          target.health -= damage;
-          if (target.health <= 0) {
-            this.team.deleteDeadCharacter(index);
-          }
-          this.gamePlay.redrawPositions(this.team.team);
+          this.gamePlay.showDamage(index, damage)
+            .then(() => {
+              target.health -= damage;
+              if (target.health <= 0) {
+                this.team.deleteDeadCharacter(index);
+              }
+              this.gamePlay.redrawPositions(this.team.team);
+            });
         }
       }
     }
