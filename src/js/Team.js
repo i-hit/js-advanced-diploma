@@ -8,33 +8,39 @@ export default class Team {
     this._evilTeam = [];
   }
 
-  addNewUnits(rules, board) {
-    this._goodTeam = [...this._goodTeam, ...this.getUnits(rules.goodParam, board)];
+  addNewUnits(rules) {
+    this._goodTeam = [...this._goodTeam, ...this.getUnits(rules.goodParam)];
 
     const { evilParam } = rules;
     evilParam.cntUnits = this._goodTeam.length;
 
-    this._evilTeam = [...this._evilTeam, ...this.getUnits(evilParam, board)];
+    this._evilTeam = [...this._evilTeam, ...this.getUnits(evilParam)];
   }
 
-  getUnits(rules, board) {
+  getUnits(rules) {
     const result = [];
     let index = 0;
-    const currentBoard = [];
-    for (let i = 0; i < board.length; i += 1) {
-      currentBoard[i] = board[i].hasChildNodes() ? 1 : 0;
-    }
+    const busyPositions = this.getPositions();
+
     const units = generateTeam(rules);
     units.forEach((e) => {
       do {
         index = Math.floor(Math.random() * rules.startpositions.length);
-      } while (currentBoard[index] === 1);
+      } while (busyPositions.includes(rules.startpositions[index]));
 
       result.push(new PositionedCharacter(e, rules.startpositions[index]));
-      currentBoard[index] = 1;
+      busyPositions.push(rules.startpositions[index]);
+      console.log(busyPositions);
     });
 
     return result;
+  }
+
+  getPositions() {
+    if (this.team.length !== 0) {
+      return this.team.reduce((a, b) => [...a, b.position], []);
+    }
+    return [];
   }
 
   get team() {

@@ -1,3 +1,5 @@
+/* eslint-disable no-alert */
+/* eslint-disable class-methods-use-this */
 /* eslint-disable no-restricted-syntax */
 import { calcHealthLevel, calcTileType } from './utils';
 
@@ -184,7 +186,7 @@ export default class GamePlay {
     alert(message);
   }
 
-  static showMessage(message) {
+  showMessage(message) {
     alert(message);
   }
 
@@ -339,8 +341,10 @@ export default class GamePlay {
         const downRight = selectedCell.position + i + j * this.boardSize;
 
         if (
-          left >= this.getEdgePointLeft(selectedCell.position)
-          && right <= this.getEdgePointRight(selectedCell.position)
+          (left >= this.getEdgePointLeft(selectedCell.position)
+          && (upLeft === index || downLeft === index))
+          || (right <= this.getEdgePointRight(selectedCell.position)
+          && (upRight === index || downRight === index))
         ) {
           result
             .add(upLeft)

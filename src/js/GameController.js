@@ -7,11 +7,12 @@ export default class GameController {
     this.gamePlay = gamePlay;
     this.stateService = stateService;
 
-    this.gameStep = 1;
+    this.gameStage = 1;
     this.playerSide = 'good';
+    this.currentSide = 'good';
+    this.selectedCharacter = undefined;
     this.team = new Team();
     this.rules = new GameRules(this.gamePlay.boardSize);
-    this.selectedCharacter = undefined;
   }
 
   init() {
@@ -23,7 +24,7 @@ export default class GameController {
     this.gamePlay.addNewGameListener(this.onNewGameClick.bind(this));
     // this.gamePlay.addSaveGameListener(this.onSaveGameClick.bind(this));
     // this.gamePlay.addLoadGameListener(this.onLoadGameClick.bind(this));
-    this.gamePlay.drawUi(this.rules.getThemes(this.gameStep));
+    this.gamePlay.drawUi(this.rules.getThemes(this.gameStage));
   }
 
   onCellClick(index) {
@@ -39,6 +40,15 @@ export default class GameController {
       }
     }
 
+    if (this.selectedCharacter && !target) {
+      if (this.gamePlay.canMoved(index, this.selectedCharacter)) {
+        this.selectedCharacter.position = index;
+        this.selectedCharacter = undefined;
+        this.gamePlay.deselectAllCell(index);
+        this.gamePlay.redrawPositions(this.team.team);
+      }
+    }
+
     if (this.selectedCharacter && target) {
       if (target.side === this.playerSide) {
         this.gamePlay.deselectAllCell();
@@ -50,7 +60,7 @@ export default class GameController {
         if (this.gamePlay.canAttack(index, this.selectedCharacter)) {
           const damage = Math.max(
             this.selectedCharacter.character.attack - target.defence,
-            this.selectedCharacter.character.attack * 0.1,
+            this.selectedCharacter.character.attack * 2,
           );
           this.gamePlay.showDamage(index, damage)
             .then(() => {
@@ -58,18 +68,16 @@ export default class GameController {
               if (target.health <= 0) {
                 this.team.deleteDeadCharacter(index);
               }
+
+              this.gamePlay.deselectAllCell();
+              this.selectedCharacter = undefined;
               this.gamePlay.redrawPositions(this.team.team);
+
+              if (this.checkWinn()) {
+                this.nextStage();
+              }
             });
         }
-      }
-    }
-
-    if (this.selectedCharacter && !target) {
-      if (this.gamePlay.canMoved(index, this.selectedCharacter)) {
-        this.selectedCharacter.position = index;
-        this.selectedCharacter = undefined;
-        this.gamePlay.deselectAllCell(index);
-        this.gamePlay.redrawPositions(this.team.team);
       }
     }
   }
@@ -111,9 +119,7 @@ export default class GameController {
         if (this.gamePlay.canAttack(index, this.selectedCharacter)) {
           this.gamePlay.selectCell(index, 'red');
           this.gamePlay.setCursor(this.rules.cursors.crosshair);
-        }
-
-        if (!this.gamePlay.canAttack(index, this.selectedCharacter)) {
+        } else {
           this.gamePlay.setCursor(this.rules.cursors.notallowed);
         }
       }
@@ -138,13 +144,39 @@ export default class GameController {
     }
   }
 
-  onNewGameClick() {
-    this.team.reset();
+  checkWinn() {
+    return this.team.team.every((e) => e.character.side === this.playerSide);
+  }
 
-    this.gamePlay.drawUi(this.rules.getThemes(this.gameStep));
-    this.team.addNewUnits(this.rules.getParam(this.gameStep), this.gamePlay.cells);
+  nextStage() {
+    this.gameStage += 1;
+    if (this.gameStage > 4) {
+      alert('WIN');
+      this.onNewGameClick();
+    } else {
+      this.team.team.forEach((e) => e.character.levelUp());
+      this.prepareStage();
+    }
+  }
 
+  prepareStage() {
+    this.gamePlay.drawUi(this.rules.getThemes(this.gameStage));
+    this.team.addNewUnits(this.rules.getParam(this.gameStage));
 
     this.gamePlay.redrawPositions(this.team.team);
+  }
+
+  reset() {
+    this.team.reset();
+    this.gameStage = 1;
+    this.playerSide = 'good';
+    this.currentSide = 'good';
+    this.selectedCharacter = undefined;
+  }
+
+  onNewGameClick() {
+    this.reset();
+
+    this.prepareStage();
   }
 }
