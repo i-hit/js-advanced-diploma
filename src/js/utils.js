@@ -1,3 +1,10 @@
+/**
+ *
+ * @param {Number} index - номер ячейки
+ * @param {Number} boardSize - размер игрового поля
+ *
+ * @returns класс для переданной ячейки
+ */
 export function calcTileType(index, boardSize) {
   // TODO: write logic here
   switch (true) {
@@ -23,6 +30,12 @@ export function calcTileType(index, boardSize) {
   }
 }
 
+/**
+ *
+ * @param {Number} health - текущий уровень здоровья
+ *
+ * @returns класс для текущего уровня здоровья
+ */
 export function calcHealthLevel(health) {
   if (health < 15) {
     return 'critical';
@@ -33,11 +46,4 @@ export function calcHealthLevel(health) {
   }
 
   return 'high';
-}
-
-export function isEmptyCell(position) {
-  const result = null;
-  // position занято на поле или нет?
-
-  return result;
 }

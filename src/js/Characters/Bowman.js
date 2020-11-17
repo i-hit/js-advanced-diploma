@@ -1,5 +1,12 @@
 import GoodCharacter from './GoodCharacter';
 
+/**
+ * @class Bowman
+ *
+ * @extends GoodCharacter
+ *
+ * Создает персонажа типа 'bowman'
+ */
 export default class Bowman extends GoodCharacter {
   constructor() {
     super();

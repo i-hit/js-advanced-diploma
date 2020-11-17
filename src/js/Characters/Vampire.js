@@ -1,5 +1,12 @@
 import EvilCharacter from './EvilCharacter';
 
+/**
+ * @class Vampire
+ *
+ * @extends EvilCharacter
+ *
+ * Создает персонажа типа 'vampire'
+ */
 export default class Vampire extends EvilCharacter {
   constructor() {
     super();

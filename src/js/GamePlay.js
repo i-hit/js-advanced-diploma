@@ -202,16 +202,15 @@ export default class GamePlay {
       .filter((o) => o.startsWith('selected')));
   }
 
+  /**
+   * Снимает выделение со всех ячеек
+   */
   deselectAllCell() {
     const cell = this.cells;
     cell.forEach((e) => {
       e.classList.remove(...Array.from(e.classList)
         .filter((o) => o.startsWith('selected')));
     });
-  }
-
-  hasSelectedCharacter() {
-    return this.selectedCell;
   }
 
   showCellTooltip(message, index) {
@@ -247,6 +246,18 @@ export default class GamePlay {
     }
   }
 
+  /**
+   * Проверяет может ли персонаж передвинуться
+   *  на ячейку под курсором мышки
+   *
+   * Позиция не должна выходить за крайние точки,
+   * определяемые вспомогательными функциями
+   *
+   * @param {Number} index - номер ячейки
+   * @param {Number} selectedCell - позиция выбранного персонажа
+   *
+   * @returns {Boolean}
+   */
   canMoved(index, selectedCell) {
     let result = false;
 
@@ -280,6 +291,13 @@ export default class GamePlay {
     return result;
   }
 
+  /**
+   * Вспомогательная функция для canMoved() canAttack()
+   *
+   * @param {Number} index - номер ячейки
+   *
+   * @returns крайнюю левую точку
+   */
   getEdgePointLeft(index) {
     let cnt = 0;
     while ((index - cnt) % this.boardSize !== 0) {
@@ -288,6 +306,13 @@ export default class GamePlay {
     return index - cnt;
   }
 
+  /**
+   * Вспомогательная функция для canMoved() canAttack()
+   *
+   * @param {Number} index - номер ячейки
+   *
+   * @returns крайнюю правую точку
+   */
   getEdgePointRight(index) {
     let cnt = 0;
     while ((index + cnt + 1) % this.boardSize !== 0) {
@@ -296,6 +321,13 @@ export default class GamePlay {
     return index + cnt;
   }
 
+  /**
+   * Вспомогательная функция для canMoved()
+   *
+   * @param {Number} index - номер ячейки
+   *
+   * @returns крайнюю левую нижнюю точку
+   */
   getEdgePointLeftDown(index) {
     let cnt = 0;
     while ((index + cnt) % this.boardSize !== 0) {
@@ -304,6 +336,13 @@ export default class GamePlay {
     return index + cnt;
   }
 
+  /**
+   * Вспомогательная функция для canMoved()
+   *
+   * @param {Number} index - номер ячейки
+   *
+   * @returns крайнюю левую верхнюю точку
+   */
   getEdgePointLeftUp(index) {
     let cnt = 0;
     while ((index - cnt) % this.boardSize !== 0) {
@@ -312,6 +351,13 @@ export default class GamePlay {
     return index - cnt;
   }
 
+  /**
+   * Вспомогательная функция для canMoved()
+   *
+   * @param {Number} index - номер ячейки
+   *
+   * @returns крайнюю правую нижнюю точку
+   */
   getEdgePointRightDown(index) {
     let cnt = 0;
     while ((index + cnt + 1) % this.boardSize !== 0) {
@@ -320,6 +366,13 @@ export default class GamePlay {
     return index + cnt;
   }
 
+  /**
+   * Вспомогательная функция для canMoved()
+   *
+   * @param {Number} index - номер ячейки
+   *
+   * @returns крайнюю правую верхнюю точку
+   */
   getEdgePointRightUp(index) {
     let cnt = 0;
     while ((index - cnt + 1) % this.boardSize !== 0) {
@@ -328,6 +381,14 @@ export default class GamePlay {
     return index - cnt;
   }
 
+  /**
+   * Проверяет может ли персонаж атаковать позицию
+   *
+   * @param {Number} index - номер ячейки под курсором мышки
+   * @param {Number} selectedCell - позиция выбранного персонажа
+   *
+   * @returns {Boolean}
+   */
   canAttack(index, selectedCell) {
     const result = new Set();
 
@@ -356,6 +417,8 @@ export default class GamePlay {
     }
     return result.has(index);
   }
+
+  // может лучше такой вариант для единообразия?
 
   // canAttack(index, selectedCell) {
   //   let result = false;

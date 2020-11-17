@@ -2,12 +2,11 @@
 /**
  * Generates random characters
  *
- * @param allowedTypes iterable of classes
- * @param maxLevel max character level
+ * @param {Array} types - allowedTypes iterable of classes
+ * @param {Number} maxLevel - max character level
  * @returns Character type children (ex. Magician, Bowman, etc)
  */
 export function* characterGenerator(types, maxLevel) {
-  // TODO: write logic here
   const index = Math.floor(Math.random() * types.length);
   const level = Math.floor(Math.random() * maxLevel) + 1;
   const character = new types[index](level);
@@ -21,8 +20,13 @@ export function* characterGenerator(types, maxLevel) {
   yield character;
 }
 
+/**
+ *
+ * @param {Object} param - объект с параметрами для создания персонажей
+ *
+ * @returns team - команду созданных персонажей
+ */
 export function generateTeam(param) {
-  // TODO: write logic here
   let result = [];
   for (let i = param.cntUnits; i > 0; i -= 1) {
     result = [...result, ...characterGenerator(param.allowedTypesCharacters, param.maxLevel)];
