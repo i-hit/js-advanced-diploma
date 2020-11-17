@@ -22,7 +22,6 @@ export default class GameState {
    * @returns объект текущего состояния игры
    */
   from() {
-    // TODO: create object
     return {
       gameStage: this.gameStage,
       playerSide: this.playerSide,
@@ -38,6 +37,11 @@ export default class GameState {
    * сохраненный в localStorage
    */
   load(object) {
+    console.log(object);
+    if (!object) {
+      throw new Error('Ошибка загрузки игры');
+    }
+
     this.gameStage = object.gameStage;
     this.playerSide = object.playerSide;
     this.currentSide = object.currentSide;
