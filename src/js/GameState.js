@@ -37,11 +37,6 @@ export default class GameState {
    * сохраненный в localStorage
    */
   load(object) {
-    console.log(object);
-    if (!object) {
-      throw new Error('Ошибка загрузки игры');
-    }
-
     this.gameStage = object.gameStage;
     this.playerSide = object.playerSide;
     this.currentSide = object.currentSide;

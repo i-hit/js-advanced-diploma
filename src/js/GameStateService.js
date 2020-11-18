@@ -16,11 +16,11 @@ export default class GameStateService {
   }
 
   /**
-   * Загружает текущее состояние игры
+   * Загружает сохраненное состояние игры
    */
   load() {
     try {
-      if (this.storage.getItem('state') === null) {
+      if (!this.storage.getItem('state')) {
         throw new Error('Invalid state');
       }
       return JSON.parse(this.storage.getItem('state'));

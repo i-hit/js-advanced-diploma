@@ -24,6 +24,7 @@ export default class GameController {
     this.gamePlay.addLoadGameListener(this.onLoadGameClick.bind(this));
 
     this.gamePlay.drawUi(this.gameState.rules.getThemes(this.gameState.gameStage));
+    this.boardLock();
   }
 
   /**
@@ -83,7 +84,6 @@ export default class GameController {
               this.gamePlay.redrawPositions(this.gameState.team.team);
 
               this.checkWin();
-              this.nextMove();
             });
         } else {
           this.gamePlay.showMessage('цель слишком далеко');
@@ -173,6 +173,9 @@ export default class GameController {
 
   /**
    * Проверяет есть ли победа\поражение на текущей стадии игры
+   * * Хорошие победили - переход на следующую стадию
+   * * Хорошие проиграли - выводит алерт
+   * * Иначе ход переходит к противнику
    */
   checkWin() {
     if (this.gameState.team.team.every((e) => e.character.side === this.gameState.playerSide)) {
@@ -180,10 +183,16 @@ export default class GameController {
         case ('good'):
           this.nextStage();
           break;
-        default:
+        case ('evil'):
           alert('You Lose');
+          this.boardLock();
+
+          break;
+        default:
           break;
       }
+    } else {
+      this.nextMove();
     }
   }
 
@@ -196,7 +205,7 @@ export default class GameController {
     this.gameState.gameStage += 1;
     if (this.gameState.gameStage > 4) {
       alert('WIN');
-      this.onNewGameClick();
+      this.boardLock();
     } else {
       this.gameState.team.team.forEach((e) => e.character.levelUp());
       this.gameState.team.addNewUnits(this.gameState.rules.getParam(this.gameState.gameStage));
@@ -225,6 +234,17 @@ export default class GameController {
     this.gameState.playerSide = 'good';
     this.gameState.currentSide = 'good';
     this.gameState.selectedCharacter = undefined;
+  }
+
+  boardLock() {
+    if (!localStorage.getItem('state')) {
+      this.gamePlay.saveGameEl.style.display = 'none';
+      this.gamePlay.loadGameEl.style.display = 'none';
+    } else {
+      this.gamePlay.saveGameEl.classList.add('btn-lock');
+      this.gamePlay.saveGameEl.disabled = true;
+    }
+    this.gamePlay.boardEl.classList.add('lock');
   }
 
   /**

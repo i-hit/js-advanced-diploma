@@ -32,6 +32,22 @@ body {
   margin: 50px 0;
 }
 
+.btn-lock {
+  position: relative;
+}
+
+.btn-lock::after {
+  content: 'OR';
+  position: absolute;
+  color: #f00;
+  background-color: #000000;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+}
+
 .board-container {
   display: flex;
   align-items: center;
@@ -40,10 +56,23 @@ body {
 }
 
 .board {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(8, 1fr);
   grid-column-gap: 2px;
   grid-row-gap: 2px;
+}
+
+.lock::after {
+  content: '';
+  position: absolute;
+  background-color: #000000;
+  opacity: 0.8;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
 }
 
 .cell {
