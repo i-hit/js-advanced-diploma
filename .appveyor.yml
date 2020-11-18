@@ -19,7 +19,7 @@ build_script:
 test_script:
   - npm run lint && npm test # скрипт тестирования
 
-  deploy_script: # скрипт развёртывания
+deploy_script: # скрипт развёртывания
 - git config --global credential.helper store
 - git config --global user.name AppVeyor
 - git config --global user.email ci@appveyor.com
