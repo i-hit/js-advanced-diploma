@@ -11,6 +11,7 @@ export default class GameState {
    */
   constructor(boardSize) {
     this.gameStage = 1;
+    this.score = 0;
     this.playerSide = 'good';
     this.currentSide = 'good';
     this.selectedCharacter = undefined;
@@ -38,6 +39,7 @@ export default class GameState {
    */
   load(object) {
     this.gameStage = object.gameStage;
+    this.score = object.score;
     this.playerSide = object.playerSide;
     this.currentSide = object.currentSide;
 

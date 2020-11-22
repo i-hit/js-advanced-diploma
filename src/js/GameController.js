@@ -202,6 +202,8 @@ export default class GameController {
    */
   nextStage() {
     this.gameState.gameStage += 1;
+    this.gameState.score += 1;
+
     if (this.gameState.gameStage > 4) {
       alert('WIN');
       this.boardLock();
@@ -220,6 +222,9 @@ export default class GameController {
    */
   prepareStage() {
     this.gamePlay.drawUi(this.gameState.rules.getThemes(this.gameState.gameStage));
+
+    this.gamePlay.scoreEl.textContent = `Score : ${this.gameState.score}`;
+    this.gameState.team.getScores();
 
     this.gamePlay.redrawPositions(this.gameState.team.team);
   }
@@ -255,14 +260,21 @@ export default class GameController {
     if (this.gameState.currentSide === 'evil') {
       this.skyNet();
     }
+    // if (this.gameState.currentSide === 'good') {
+    //   this.skyNet();
+    // }
   }
 
   /**
    * Логика AI
    */
   skyNet() {
-    const enemies = this.gameState.team.goodTeam;
-    const ally = this.gameState.team.evilTeam;
+    let enemies = this.gameState.team.goodTeam;
+    let ally = this.gameState.team.evilTeam;
+    if (this.gameState.playerSide === 'good') {
+      enemies = this.gameState.team.evilTeam;
+      ally = this.gameState.team.goodTeam;
+    }
 
     const enemyPosition = enemies.reduce((a, b) => [...a, b.position], []);
 
@@ -302,8 +314,6 @@ export default class GameController {
 
 
     if (!enemyPositionsCanAttack.length) {
-    // move
-
       this.skyNetMove(ally, enemies);
     }
   }
@@ -338,30 +348,34 @@ export default class GameController {
       }
     }
 
-    if (cellCanMoved.every((e) => this.gamePlay.canAttack(e, movedCharacter[0]))) {
-      cellCanMoved = cellCanMoved.filter((e) => {
-        const testCharacter = movedCharacter[0];
-        testCharacter.position = e;
-        return enemyPosition.filter((pos) => this.gamePlay.canAttack(pos, testCharacter));
-      });
 
-      if (cellCanMoved.length) {
-        index = Math.floor(Math.random() * cellCanMoved.length);
-      }
-    } else {
-      const dangerPositions = new Set();
-      enemies.forEach((e) => {
-        for (let i = 0; i < this.gamePlay.boardSize ** 2; i += 1) {
-          if (this.gamePlay.canAttack(i, e) && !busyPositions.includes(i)) {
-            dangerPositions.add(i);
-          }
+    const dangerPositions = new Set();
+    enemies.forEach((e) => {
+      for (let i = 0; i < this.gamePlay.boardSize ** 2; i += 1) {
+        if (this.gamePlay.canAttack(i, e) && !busyPositions.includes(i)) {
+          dangerPositions.add(i);
         }
-      });
+      }
+    });
 
+    if (cellCanMoved.every((e) => dangerPositions.has(e))) {
+      const cellCanAttack = [];
+      cellCanMoved.forEach((e) => {
+        enemyPosition.forEach((pos) => {
+          movedCharacter[0].position = e;
+          if (this.gamePlay.canAttack(pos, movedCharacter[0])) {
+            cellCanAttack.push(e);
+          }
+          cellCanMoved = cellCanAttack;
+        });
+      });
+      index = Math.floor(Math.random() * cellCanMoved.length);
+    } else {
       do {
         index = Math.floor(Math.random() * cellCanMoved.length);
       } while (dangerPositions.has(cellCanMoved[index]));
     }
+
 
     movedCharacter[0].position = cellCanMoved[index];
 

@@ -35,15 +35,22 @@ export default class GamePlay {
     this.checkBinding();
 
     this.container.innerHTML = `
-      <div class="controls">
-        <button data-id="action-restart" class="btn">New Game</button>
-        <button data-id="action-save" class="btn">Save Game</button>
-        <button data-id="action-load" class="btn">Load Game</button>
+      <div class="utils">
+        <div class="score"></div>
+        <div class="controls">
+          <button data-id="action-restart" class="btn">New Game</button>
+          <button data-id="action-save" class="btn">Save Game</button>
+          <button data-id="action-load" class="btn">Load Game</button>
+        </div>
+        <div class="score score-best"></div>
       </div>
       <div class="board-container">
         <div data-id="board" class="board"></div>
       </div>
     `;
+
+    this.scoreEl = this.container.querySelector('.score');
+    this.scoreBestEl = this.container.querySelector('.score-best');
 
     this.newGameEl = this.container.querySelector('[data-id=action-restart]');
     this.saveGameEl = this.container.querySelector('[data-id=action-save]');

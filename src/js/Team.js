@@ -175,4 +175,8 @@ export default class Team {
     }
     return null;
   }
+
+  getScores() {
+    // const goodTeamHealth = this.goodTeam.reduce((a, b) => [+(a) + b.character.health], 0);
+  }
 }

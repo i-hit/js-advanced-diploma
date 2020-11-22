@@ -12,6 +12,18 @@ body {
   font-size: 16px;
 }
 
+.utils {
+  display: flex;
+  justify-content: space-between;
+}
+
+.score {
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #fff;
+}
+
 .btn {
   display: inline-block;
   font-weight: 400;
