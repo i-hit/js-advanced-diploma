@@ -186,7 +186,6 @@ export default class GameController {
         case ('evil'):
           alert('You Lose');
           this.boardLock();
-
           break;
         default:
           break;
@@ -253,24 +252,123 @@ export default class GameController {
   nextMove() {
     this.gameState.currentSide = this.gameState.currentSide === 'good' ? 'evil' : 'good';
     this.gameState.playerSide = this.gameState.currentSide;
-    // if (this.gameState.currentSide !== this.gameState.playerSide) {
-    //   this.skyNet();
-    // }
+    if (this.gameState.currentSide === 'evil') {
+      this.skyNet();
+    }
   }
 
   /**
    * Логика AI
    */
-  // skyNet() {
-  //   let enemies = this.gameState.team.goodTeam;
-  //   let ally = this.gameState.team.evilTeam;
-  //   if (this.gameState.currentSide === 'good') {
-  // let enemies = this.gameState.team.evilTeam;
-  // let ally = this.gameState.team.goodTeam;
-  // }
-  //   const enemyPosition = enemies.reduce((a, b) => [...a, b.position], []);
+  skyNet() {
+    const enemies = this.gameState.team.goodTeam;
+    const ally = this.gameState.team.evilTeam;
 
-  // }
+    const enemyPosition = enemies.reduce((a, b) => [...a, b.position], []);
+
+    const enemyPositionsCanAttack = [];
+
+    enemyPosition.forEach((pos) => {
+      ally.forEach((el) => {
+        if (this.gamePlay.canAttack(pos, el)) {
+          enemyPositionsCanAttack.push([pos, el]);
+        }
+      });
+    });
+
+    if (enemyPositionsCanAttack.length) {
+      const sortByAttack = enemyPositionsCanAttack.sort(
+        (a, b) => b[1].character.attack - a[1].character.attack,
+      );
+      const target = this.gameState.team.getElementByPosition(sortByAttack[0][0]);
+
+      const damage = Math.max(
+        sortByAttack[0][1].character.attack - target.character.defence,
+        sortByAttack[0][1].character.attack * 0.1,
+      );
+
+      this.gamePlay.showDamage(sortByAttack[0][0], damage)
+        .then(() => {
+          target.character.health -= damage;
+          if (target.character.health <= 0) {
+            this.gameState.team.deleteDeadCharacter(sortByAttack[0][0]);
+          }
+
+          this.gamePlay.redrawPositions(this.gameState.team.team);
+
+          this.checkWin();
+        });
+    }
+
+
+    if (!enemyPositionsCanAttack.length) {
+    // move
+
+      this.skyNetMove(ally, enemies);
+    }
+  }
+
+  skyNetMove(ally, enemies) {
+    const enemyPosition = enemies.reduce((a, b) => [...a, b.position], []);
+
+    const allyPositionsCanAttack = [];
+    ally.forEach((pos) => {
+      enemies.forEach((el) => {
+        if (this.gamePlay.canAttack(pos.position, el)) {
+          allyPositionsCanAttack.push(pos);
+        }
+      });
+    });
+
+    let index;
+    let movedCharacter = ally;
+
+    if (allyPositionsCanAttack.length) {
+      const sortByAttack = allyPositionsCanAttack.sort(
+        (a, b) => b.character.attack - a.character.attack,
+      );
+      movedCharacter = sortByAttack;
+    }
+
+    let cellCanMoved = [];
+    const busyPositions = this.gameState.team.getPositions();
+    for (let i = 0; i < this.gamePlay.boardSize ** 2; i += 1) {
+      if (this.gamePlay.canMoved(i, movedCharacter[0]) && !busyPositions.includes(i)) {
+        cellCanMoved.push(i);
+      }
+    }
+
+    if (cellCanMoved.every((e) => this.gamePlay.canAttack(e, movedCharacter[0]))) {
+      cellCanMoved = cellCanMoved.filter((e) => {
+        const testCharacter = movedCharacter[0];
+        testCharacter.position = e;
+        return enemyPosition.filter((pos) => this.gamePlay.canAttack(pos, testCharacter));
+      });
+
+      if (cellCanMoved.length) {
+        index = Math.floor(Math.random() * cellCanMoved.length);
+      }
+    } else {
+      const dangerPositions = new Set();
+      enemies.forEach((e) => {
+        for (let i = 0; i < this.gamePlay.boardSize ** 2; i += 1) {
+          if (this.gamePlay.canAttack(i, e) && !busyPositions.includes(i)) {
+            dangerPositions.add(i);
+          }
+        }
+      });
+
+      do {
+        index = Math.floor(Math.random() * cellCanMoved.length);
+      } while (dangerPositions.has(cellCanMoved[index]));
+    }
+
+    movedCharacter[0].position = cellCanMoved[index];
+
+    this.gamePlay.redrawPositions(this.gameState.team.team);
+
+    this.checkWin();
+  }
 
   /**
    * События при клике по кнопке "NewGame"
