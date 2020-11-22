@@ -83,20 +83,24 @@ export default class GameRules {
       maxLevel: stage,
     };
 
-    switch (stage) {
-      case 1:
-        goodParam.allowedTypesCharacters = [
-          Bowman,
-          Swordsman,
-        ];
-        goodParam.maxLevel = 1;
-        break;
-      case 2:
-        goodParam.cntUnits = 1;
-        break;
+    if (stage === 1) {
+      goodParam.allowedTypesCharacters = [
+        Bowman,
+        Swordsman,
+      ];
+      goodParam.maxLevel = 1;
+    }
 
-      default:
-        break;
+    if (stage === 2) {
+      goodParam.cntUnits = 1;
+    }
+
+    if (stage > 4) {
+      const result = this.getParam(Math.floor(Math.random() * 4));
+      result.goodParam.maxLevel = stage - 1;
+      result.evilParam.maxLevel = stage;
+      console.log(result);
+      return result;
     }
 
     return {
@@ -113,7 +117,7 @@ export default class GameRules {
    */
   getThemes(stage) {
     const keys = Object.keys(this.themes);
-    const index = stage <= 4 ? stage - 1 : 4;
+    const index = stage <= 4 ? stage - 1 : Math.floor(Math.random() * 4);
     return this.themes[keys[index]];
   }
 

@@ -184,6 +184,9 @@ export default class GameController {
           this.nextStage();
           break;
         case ('evil'):
+          if (this.gameState.scoreBest < this.gameState.score) {
+            this.gameState.scoreBest = this.gameState.score;
+          }
           alert('You Lose');
           this.boardLock();
           break;
@@ -206,16 +209,10 @@ export default class GameController {
     if (this.gameState.scoreBest < this.gameState.score) {
       this.gameState.scoreBest = this.gameState.score;
     }
+    this.gameState.team.team.forEach((e) => e.character.levelUp());
+    this.gameState.team.addNewUnits(this.gameState.rules.getParam(this.gameState.gameStage));
 
-    if (this.gameState.gameStage > 4) {
-      alert('WIN');
-      this.boardLock();
-    } else {
-      this.gameState.team.team.forEach((e) => e.character.levelUp());
-      this.gameState.team.addNewUnits(this.gameState.rules.getParam(this.gameState.gameStage));
-
-      this.prepareStage();
-    }
+    this.prepareStage();
   }
 
   /**

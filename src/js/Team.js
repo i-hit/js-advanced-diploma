@@ -46,6 +46,10 @@ export default class Team {
     const busyPositions = this.getPositions();
 
     const units = generateTeam(rules);
+    const emptyCell = rules.startpositions.filter((e) => !busyPositions.includes(e));
+    if (emptyCell.length < units.length) {
+      units.splice(emptyCell.length);
+    }
     units.forEach((e) => {
       do {
         index = Math.floor(Math.random() * rules.startpositions.length);

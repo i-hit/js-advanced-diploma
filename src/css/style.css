@@ -18,10 +18,15 @@ body {
 }
 
 .score {
+  width: 300px;
   font-weight: 400;
   font-size: 1rem;
   line-height: 1.5;
   color: #fff;
+}
+
+.score-best {
+  text-align: right;
 }
 
 .btn {
