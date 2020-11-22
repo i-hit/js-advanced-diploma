@@ -202,7 +202,10 @@ export default class GameController {
    */
   nextStage() {
     this.gameState.gameStage += 1;
-    this.gameState.score += 1;
+    this.gameState.score += Math.round(this.gameState.team.getScores());
+    if (this.gameState.scoreBest < this.gameState.score) {
+      this.gameState.scoreBest = this.gameState.score;
+    }
 
     if (this.gameState.gameStage > 4) {
       alert('WIN');
@@ -224,7 +227,7 @@ export default class GameController {
     this.gamePlay.drawUi(this.gameState.rules.getThemes(this.gameState.gameStage));
 
     this.gamePlay.scoreEl.textContent = `Score : ${this.gameState.score}`;
-    this.gameState.team.getScores();
+    this.gamePlay.scoreBestEl.textContent = `Best Score : ${this.gameState.scoreBest}`;
 
     this.gamePlay.redrawPositions(this.gameState.team.team);
   }
@@ -235,6 +238,7 @@ export default class GameController {
   reset() {
     this.gameState.team.reset();
     this.gameState.gameStage = 1;
+    this.gameState.score = 0;
     this.gameState.playerSide = 'good';
     this.gameState.currentSide = 'good';
     this.gameState.selectedCharacter = undefined;
