@@ -16,6 +16,7 @@ export default class GameState {
     this.playerSide = 'good';
     this.currentSide = 'good';
     this.selectedCharacter = undefined;
+    this.theme = undefined;
     this.team = new Team();
     this.rules = new GameRules(boardSize);
   }
@@ -31,6 +32,7 @@ export default class GameState {
       playerSide: this.playerSide,
       currentSide: this.currentSide,
       selectedCharacter: this.selectedCharacter,
+      theme: this.theme,
       team: this.team,
     };
   }
@@ -46,6 +48,7 @@ export default class GameState {
     this.scoreBest = object.scoreBest;
     this.playerSide = object.playerSide;
     this.currentSide = object.currentSide;
+    this.theme = object.theme;
 
     const goodTeam = this.team.recoverTeam(object.team.goodTeam, this.rules.getRecoverTypes());
     const evilTeam = this.team.recoverTeam(object.team.evilTeam, this.rules.getRecoverTypes());
@@ -55,5 +58,14 @@ export default class GameState {
     this.selectedCharacter = object.selectedCharacter
       ? this.team.getElementByPosition(object.selectedCharacter.position)
       : undefined;
+  }
+
+  /**
+   *
+   * @param {Object} object - объект 'state'
+   * сохраненный в localStorage
+   */
+  getBestScores(object) {
+    this.scoreBest = object.scoreBest;
   }
 }

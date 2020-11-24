@@ -221,7 +221,8 @@ export default class GameController {
    * Обновление позиций персонажей
    */
   prepareStage() {
-    this.gamePlay.drawUi(this.gameState.rules.getThemes(this.gameState.gameStage));
+    this.gameState.theme = this.gameState.rules.getThemes(this.gameState.gameStage);
+    this.gamePlay.drawUi(this.gameState.theme);
 
     this.gamePlay.scoreEl.textContent = `Score : ${this.gameState.score}`;
     this.gamePlay.scoreBestEl.textContent = `Best Score : ${this.gameState.scoreBest}`;
@@ -268,6 +269,10 @@ export default class GameController {
 
   /**
    * Логика AI
+   *
+   * Атакуй если можешь
+   *
+   * Или беги
    */
   skyNet() {
     let enemies = this.gameState.team.goodTeam;
@@ -319,6 +324,18 @@ export default class GameController {
     }
   }
 
+  /**
+   *
+   * @param {Array} ally - команда союзников
+   * @param {Array} enemies - команда противников
+   *
+   * Если позиция под атакой, то убежать
+   *
+   * Если все возможные позиции под атакой,
+   * то попробовать подойти к противнику для атаки на следующем ходу
+   * или просто рандомное перемещение
+   *
+   */
   skyNetMove(ally, enemies) {
     const enemyPosition = enemies.reduce((a, b) => [...a, b.position], []);
 
@@ -367,7 +384,9 @@ export default class GameController {
           if (this.gamePlay.canAttack(pos, movedCharacter[0])) {
             cellCanAttack.push(e);
           }
-          cellCanMoved = cellCanAttack;
+          if (cellCanAttack.length) {
+            cellCanMoved = cellCanAttack;
+          }
         });
       });
       index = Math.floor(Math.random() * cellCanMoved.length);
@@ -393,6 +412,10 @@ export default class GameController {
    */
   onNewGameClick() {
     this.reset();
+
+    const result = this.stateService.load();
+    this.gameState.getBestScores(result);
+
     this.gameState.team.addNewUnits(this.gameState.rules.getParam(this.gameState.gameStage));
 
     this.prepareStage();
@@ -414,7 +437,12 @@ export default class GameController {
     const result = this.stateService.load();
     this.gameState.load(result);
 
-    this.prepareStage();
+    this.gamePlay.drawUi(this.gameState.theme);
+
+    this.gamePlay.scoreEl.textContent = `Score : ${this.gameState.score}`;
+    this.gamePlay.scoreBestEl.textContent = `Best Score : ${this.gameState.scoreBest}`;
+
+    this.gamePlay.redrawPositions(this.gameState.team.team);
     if (this.gameState.selectedCharacter) {
       this.gamePlay.selectCell(this.gameState.selectedCharacter.position);
     }
