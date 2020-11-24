@@ -66,6 +66,6 @@ export default class GameState {
    * сохраненный в localStorage
    */
   getBestScores(object) {
-    this.scoreBest = object.scoreBest;
+    this.scoreBest = object.scoreBest || 0;
   }
 }
