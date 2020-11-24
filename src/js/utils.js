@@ -6,28 +6,32 @@
  * @returns класс для переданной ячейки
  */
 export function calcTileType(index, boardSize) {
-  // TODO: write logic here
-  switch (true) {
-    case (index === 0):
-      return 'top-left';
-    case (index === boardSize - 1):
-      return 'top-right';
-    case (index === boardSize ** 2 - boardSize):
-      return 'bottom-left';
-    case (index === boardSize ** 2 - 1):
-      return 'bottom-right';
-    case (index > 0 && index < boardSize - 1):
-      return 'top';
-    case (index % boardSize === 0):
-      return 'left';
-    case ((index + 1) % boardSize === 0):
-      return 'right';
-    case (index > boardSize ** 2 - boardSize && index < boardSize ** 2):
-      return 'bottom';
-
-    default:
-      return 'center';
+  if (index === 0) {
+    return 'top-left';
   }
+  if (index === boardSize - 1) {
+    return 'top-right';
+  }
+  if (index === boardSize ** 2 - boardSize) {
+    return 'bottom-left';
+  }
+  if (index === boardSize ** 2 - 1) {
+    return 'bottom-right';
+  }
+  if (index > 0 && index < boardSize - 1) {
+    return 'top';
+  }
+  if (index % boardSize === 0) {
+    return 'left';
+  }
+  if ((index + 1) % boardSize === 0) {
+    return 'right';
+  }
+  if (index > boardSize ** 2 - boardSize && index < boardSize ** 2) {
+    return 'bottom';
+  }
+
+  return 'center';
 }
 
 /**

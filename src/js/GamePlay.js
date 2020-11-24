@@ -266,8 +266,6 @@ export default class GamePlay {
    * @returns {Boolean}
    */
   canMoved(index, selectedCell) {
-    let result = false;
-
     for (let i = 1; i <= selectedCell.character.travelRange; i += 1) {
       const left = selectedCell.position - i;
       const right = selectedCell.position + i;
@@ -279,24 +277,66 @@ export default class GamePlay {
       const rightDown = selectedCell.position + i + i * this.boardSize;
 
 
-      switch (true) {
-        case (up === index):
-        case (down === index):
-        case (left === index && index >= this.getEdgePointLeft(selectedCell.position)):
-        case (right === index && index <= this.getEdgePointRight(selectedCell.position)):
-        case (leftUp === index && index >= this.getEdgePointLeftUp(selectedCell.position)):
-        case (rightUp === index && index >= this.getEdgePointRightUp(selectedCell.position)):
-        case (leftDown === index && index <= this.getEdgePointLeftDown(selectedCell.position)):
-        case (rightDown === index && index <= this.getEdgePointRightDown(selectedCell.position)):
-          result = true;
-          break;
-
-        default:
-          break;
+      if (up === index) {
+        return true;
+      }
+      if (down === index) {
+        return true;
+      }
+      if (left === index && index >= this.getEdgePointLeft(selectedCell.position)) {
+        return true;
+      }
+      if (right === index && index <= this.getEdgePointRight(selectedCell.position)) {
+        return true;
+      }
+      if (leftUp === index && index >= this.getEdgePointLeftUp(selectedCell.position)) {
+        return true;
+      }
+      if (rightUp === index && index >= this.getEdgePointRightUp(selectedCell.position)) {
+        return true;
+      }
+      if (leftDown === index && index <= this.getEdgePointLeftDown(selectedCell.position)) {
+        return true;
+      }
+      if (rightDown === index && index <= this.getEdgePointRightDown(selectedCell.position)) {
+        return true;
       }
     }
-    return result;
+    return false;
   }
+
+  // canMoved(index, selectedCell) {
+  //   let result = false;
+
+  //   for (let i = 1; i <= selectedCell.character.travelRange; i += 1) {
+  //     const left = selectedCell.position - i;
+  //     const right = selectedCell.position + i;
+  //     const up = selectedCell.position - i * this.boardSize;
+  //     const down = selectedCell.position + i * this.boardSize;
+  //     const leftUp = selectedCell.position - i - i * this.boardSize;
+  //     const rightUp = selectedCell.position + i - i * this.boardSize;
+  //     const leftDown = selectedCell.position - i + i * this.boardSize;
+  //     const rightDown = selectedCell.position + i + i * this.boardSize;
+
+
+  //     switch (true) {
+  //       case (up === index):
+  //       case (down === index):
+  //       case (left === index && index >= this.getEdgePointLeft(selectedCell.position)):
+  //       case (right === index && index <= this.getEdgePointRight(selectedCell.position)):
+  //       case (leftUp === index && index >= this.getEdgePointLeftUp(selectedCell.position)):
+  //       case (rightUp === index && index >= this.getEdgePointRightUp(selectedCell.position)):
+  //       case (leftDown === index && index <= this.getEdgePointLeftDown(selectedCell.position)):
+  //       case (rightDown === index && index <= this.getEdgePointRightDown(selectedCell.position)):
+  //         result = true;
+  //         break;
+
+  //       default:
+  //         break;
+  //     }
+  //   }
+  //   return result;
+  // }
 
   /**
    * Вспомогательная функция для canMoved() canAttack()
