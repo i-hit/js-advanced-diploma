@@ -59,13 +59,4 @@ export default class GameState {
       ? this.team.getElementByPosition(object.selectedCharacter.position)
       : undefined;
   }
-
-  /**
-   *
-   * @param {Object} object - объект 'state'
-   * сохраненный в localStorage
-   */
-  getBestScores(object) {
-    this.scoreBest = object.scoreBest || 0;
-  }
 }

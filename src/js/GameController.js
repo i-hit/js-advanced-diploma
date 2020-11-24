@@ -413,9 +413,6 @@ export default class GameController {
   onNewGameClick() {
     this.reset();
 
-    const result = this.stateService.load();
-    this.gameState.getBestScores(result);
-
     this.gameState.team.addNewUnits(this.gameState.rules.getParam(this.gameState.gameStage));
 
     this.prepareStage();
